@@ -9,6 +9,7 @@ services:
 
   kafka:
     image: confluentinc/cp-kafka:7.5.0
+    hostname: kafka
     depends_on:
       - zookeeper
     environment:
@@ -28,20 +29,28 @@ services:
       retries: 10
       start_period: 30s
 
+  jobmanager:
+    image: flink:1.18-scala_2.12
+    hostname: jobmanager
+    command: jobmanager
+    ports:
+      - "8081:8081"
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=jobmanager
+
+  taskmanager:
+    image: flink:1.18-scala_2.12
+    hostname: taskmanager
+    command: taskmanager
+    depends_on:
+      - jobmanager
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=jobmanager
+
   generator:
     build:
       context: ..
       dockerfile: docker/generator/Dockerfile
-    depends_on:
-      kafka:
-        condition: service_healthy
-    environment:
-      - KAFKA_BROKER=kafka:9092
-
-  detector:
-    build:
-      context: ..
-      dockerfile: docker/detector-flink/Dockerfile
     depends_on:
       kafka:
         condition: service_healthy

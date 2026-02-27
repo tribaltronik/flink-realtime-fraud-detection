@@ -35,12 +35,12 @@
 
 ---
 
-## Approach 2: With Flink (Next Iteration)
+## Approach 2: With Flink (POC)
 
 ```
 ┌─────────────────┐     ┌─────────┐     ┌──────────────────┐     ┌──────────────────────────┐
 │  Transaction    │────▶│  Kafka  │────▶│  Flink Job       │────▶│  Suspicious Transactions │
-│  Generator       │     │ :9092   │     │  (SQL or Python)│     │  (Kafka Topic)           │
+│  Generator       │     │ :9092   │     │  (Flink SQL)     │     │  (Kafka Topic)           │
 └─────────────────┘     └─────────┘     └──────────────────┘     └──────────────────────────┘
                               ▲
                               │
@@ -55,16 +55,48 @@
 - **Generator**: Produces fake transactions
 - **Kafka**: Message broker
 - **Flink Cluster**: JobManager + TaskManager
-- **Flink Job**: Processes streaming data with fault tolerance
+- **Flink SQL Job**: Processes streaming data with fault tolerance
 
-### Flink Advantages
-- **Exactly-once processing** - checkpointing
-- **Stateful processing** - fault-tolerant state
-- **Parallelism** - scale horizontally
-- **Event time** - windowing, late data handling
-- **Savepoints** - stop/resume jobs
-- **Metrics** - built-in monitoring
-- **Windowing** - tumbling, sliding, session windows
+### Flink SQL Features Demonstrated
+- **Checkpointing** - Every 10 seconds for fault tolerance
+- **Event Time Processing** - Using timestamps and watermarks
+- **Windowing** - Tumbling windows for velocity detection
+- **Exactly-once** - Kafka exactly-once semantics
+- **Fault Tolerance** - Job can restart from checkpoint
+
+### Fraud Detection Rules (Flink SQL)
+- `HIGH_VALUE` - amount ≥ 5000 (filter)
+- `HIGH_VELOCITY` - >5 transactions in 5 min window (tumbling window)
+- `RISK_COUNTRY` - XX, YY, ZZ (filter)
+
+### How to Submit Job
+
+1. Start the cluster:
+   ```bash
+   make up-flink
+   ```
+
+2. Access Flink SQL client:
+   ```bash
+   docker exec -it docker-flink-sql-1 /opt/flink/bin/sql-client.sh
+   ```
+
+3. Paste the SQL from `docker/flink-sql/fraud-detection.sql`
+
+4. Check Flink UI: http://localhost:8081
+
+### Pros
+- Exactly-once processing with checkpointing
+- Stateful processing with fault tolerance
+- Parallel processing out of the box
+- Event time and windowing support
+- Savepoints for stop/resume
+- Built-in metrics
+
+### Cons
+- More complex setup
+- Requires learning Flink SQL
+- Additional infrastructure (Flink cluster)
 
 ---
 
@@ -83,12 +115,22 @@
 
 ---
 
-## Next Steps (Flink Iteration)
+## Note on Flink SQL Client
 
-1. Set up Flink cluster properly
-2. Use Flink SQL for fraud detection
-3. Add windowed aggregations
-4. Implement stateful processing
-5. Add checkpointing
-6. Configure alerting
-7. Deploy to Kubernetes
+The Flink SQL client in standalone mode runs in "embedded" mode, which means it executes queries locally. For production or proper job submission, you would need:
+
+1. **Flink SQL Gateway** - REST API for job submission
+2. **Build Flink JAR** - Compile SQL into a proper Flink job
+3. **Session Cluster** - Submit jobs to an existing cluster
+
+For this POC, the SQL client is provided for manual job submission and experimentation.
+
+---
+
+## Next Steps
+
+1. Test both approaches
+2. Compare performance and features
+3. For Kubernetes deployment, use Flink Kubernetes Operator
+4. Add more complex fraud detection rules
+5. Add metrics and monitoring

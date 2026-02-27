@@ -1,44 +1,94 @@
-# Real-Time Fraud Detection with Apache Flink
+# Real-Time Fraud Detection
 
-This repository contains a **real-time fraud detection pipeline** built with **Apache Flink** and **Apache Kafka**.  
-It simulates a stream of financial transactions, processes them with Flink’s stateful streaming APIs, and flags suspicious transactions based on simple fraud rules.
-
-The project provides two local environments:
-
-- **Docker Compose** — fast local development and configuration testing
-- **Kubernetes (kind)** — production-like deployment and integration testing
+A real-time fraud detection pipeline demonstrating two approaches:
+1. **Without Flink** - Simple Kafka consumer (current)
+2. **With Flink** - Flink streaming (next iteration)
 
 ---
 
-## High-level architecture
+## Quick Start (Without Flink)
 
-- A **Kafka event generator** simulates financial transactions.
-- **Flink** consumes the transaction stream from Kafka.
-- Flink applies **fraud detection logic** (e.g., high-value transactions, velocity checks per user).
-- Suspicious transactions are written to a separate Kafka topic and logged.
+```bash
+# Start infrastructure
+cd docker && docker-compose up -d
 
-See `docs/architecture.md` and `docs/diagrams/architecture.txt` for more details.
+# Create Kafka topics
+docker exec docker-kafka-1 kafka-topics --create --topic transactions --bootstrap-server localhost:9092 --partitions 3 --replication-factor 1
+docker exec docker-kafka-1 kafka-topics --create --topic suspicious-transactions --bootstrap-server localhost:9092 --partitions 3 --replication-factor 1
+
+# Watch fraud alerts
+docker exec docker-kafka-1 kafka-console-consumer --topic suspicious-transactions --from-beginning --bootstrap-server localhost:9092
+```
+
+Or use the Makefile:
+
+```bash
+make up      # Start all services
+make down    # Stop all services
+```
 
 ---
 
-## Repository structure
+## Architecture
 
-```text
+### Current (Without Flink)
+```
+Generator → Kafka → Python Detector → Suspicious Transactions
+```
+
+- **Generator**: Produces fake transactions to Kafka
+- **Python Detector**: Kafka consumer with fraud detection rules
+- **Output**: Suspicious transactions in Kafka topic
+
+### Fraud Detection Rules
+- `HIGH_VALUE` - amount ≥ 5000
+- `HIGH_VELOCITY` - >5 transactions in 5 min per user
+- `RISK_COUNTRY` - XX, YY, ZZ
+- `ROUND_AMOUNT` - multiples of 1000, >3000
+- `RAPID_INCREASE` - amount doubling
+
+### Access Points
+- Flink UI: http://localhost:8081 (running but not used)
+- Kafka: localhost:9092
+
+---
+
+## Files
+
+```
 src/
-  fraud_detection_job.py      # Flink job (PyFlink)
-  kafka_event_generator.py    # Transaction simulator
+  kafka_event_generator.py    # Transaction producer
+  flink_detector.py           # Fraud detection logic
 
 docker/
-  docker-compose.yml          # Flink + Kafka stack
-  flink-conf/                 # Flink configuration
-
-k8s/
-  kind-config.yaml            # kind cluster config
-  flink-cluster.yaml          # Flink on K8s (SessionCluster)
-  kafka.yaml                  # Kafka on K8s (simple deployment)
+  docker-compose.yml          # Infrastructure
+  generator/Dockerfile        # Generator container
+  detector/Dockerfile         # Detector container
+  lib/                        # Flink connectors (for next iteration)
+  flink-sql/                  # Flink SQL (for next iteration)
 
 docs/
-  architecture.md
-  diagrams/architecture.txt
+  architecture.md             # Architecture comparison
+```
 
+---
+
+## Next Iteration: With Flink
+
+See `docs/architecture.md` for details on adding Flink.
+
+Key Flink benefits:
+- Exactly-once processing
+- Stateful processing with fault tolerance
+- Horizontal parallelism
+- Windowing & aggregations
+- Savepoints for stop/resume
+- Built-in metrics
+
+---
+
+## Stop
+
+```bash
+make down
 ```

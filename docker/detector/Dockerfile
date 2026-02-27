@@ -13,8 +13,8 @@ RUN uv pip install kafka-python-ng
 
 WORKDIR /app
 
-COPY src/simple_detector.py .
+COPY src/flink_detector.py .
 
 ENV KAFKA_BROKER=kafka:9092
 
-CMD ["python", "simple_detector.py"]
+CMD ["python", "-u", "flink_detector.py"]

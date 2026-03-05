@@ -12,8 +12,8 @@ RUN uv pip install kafka-python-ng
 
 WORKDIR /app
 
-COPY src/flink_detector.py .
+COPY src/fraud_detector.py .
 
 ENV KAFKA_BROKER=kafka:9092
 
-CMD ["python", "-u", "flink_detector.py"]
+CMD ["python", "-u", "fraud_detector.py"]

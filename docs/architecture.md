@@ -198,8 +198,8 @@ flink-realtime-fraud-detection/
 │   │   └── submit.sql                    # Flink SQL fraud detection
 │   └── generator/                        # Kafka message generator
 ├── src/
-│   ├── flink_detector.py                # Python fraud detector
-│   └── kafka_event_generator.py          # Kafka message generator
+│   ├── fraud_detector.py              # Python fraud detector
+│   └── kafka_event_generator.py      # Kafka message generator
 ├── docs/                                 # Documentation
 ├── submit-job.sh                         # Manual job submission script
 ├── makefile                              # Build automation

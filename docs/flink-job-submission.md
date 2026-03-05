@@ -257,24 +257,3 @@ vim docker/detector-flink/submit.sql
 # Re-submit
 ./submit-job.sh
 ```
-
----
-
-## Current Job Status
-
-When running `make up-flink`, the job-submitter container will:
-1. Download Kafka connector JARs if needed
-2. Wait for JobManager REST API to respond
-3. Submit the SQL job automatically
-
-Check job-submitter logs:
-```bash
-docker logs docker-job-submitter-1
-```
-
-Expected output:
-```
-Waiting for Flink JobManager...
-JobManager ready. Submitting SQL job...
-Job submitted. Keeping container alive.
-```

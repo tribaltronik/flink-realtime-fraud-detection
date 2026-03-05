@@ -41,7 +41,7 @@ services:
   detector:
     build:
       context: ..
-      dockerfile: docker/detector-flink/Dockerfile
+      dockerfile: docker/detector/Dockerfile
     depends_on:
       kafka:
         condition: service_healthy

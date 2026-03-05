@@ -12,8 +12,8 @@ RUN uv pip install kafka-python-ng
 
 WORKDIR /app
 
-COPY docker/flink-sql/flink_style_detector.py .
+COPY src/flink_detector.py .
 
 ENV KAFKA_BROKER=kafka:9092
 
-CMD ["python", "-u", "flink_style_detector.py"]
+CMD ["python", "-u", "flink_detector.py"]

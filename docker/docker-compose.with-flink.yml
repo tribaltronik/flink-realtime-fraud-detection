@@ -32,7 +32,14 @@ services:
   jobmanager:
     image: flink:1.18-scala_2.12
     hostname: jobmanager
-    command: jobmanager
+    command: >
+      bash -c "
+        if [ ! -f /opt/flink/lib/flink-connector-kafka-3.2.0-1.18.jar ]; then
+          curl -sL -o /opt/flink/lib/flink-connector-kafka-3.2.0-1.18.jar https://repo1.maven.org/maven2/org/apache/flink/flink-connector-kafka/3.2.0-1.18/flink-connector-kafka-3.2.0-1.18.jar;
+          curl -sL -o /opt/flink/lib/kafka-clients-3.2.0.jar https://repo1.maven.org/maven2/org/apache/kafka/kafka-clients/3.2.0/kafka-clients-3.2.0.jar;
+        fi;
+        /docker-entrypoint.sh jobmanager
+      "
     ports:
       - "8081:8081"
     environment:
@@ -41,7 +48,14 @@ services:
   taskmanager:
     image: flink:1.18-scala_2.12
     hostname: taskmanager
-    command: taskmanager
+    command: >
+      bash -c "
+        if [ ! -f /opt/flink/lib/flink-connector-kafka-3.2.0-1.18.jar ]; then
+          curl -sL -o /opt/flink/lib/flink-connector-kafka-3.2.0-1.18.jar https://repo1.maven.org/maven2/org/apache/flink/flink-connector-kafka/3.2.0-1.18/flink-connector-kafka-3.2.0-1.18.jar;
+          curl -sL -o /opt/flink/lib/kafka-clients-3.2.0.jar https://repo1.maven.org/maven2/org/apache/kafka/kafka-clients/3.2.0/kafka-clients-3.2.0.jar;
+        fi;
+        /docker-entrypoint.sh taskmanager
+      "
     depends_on:
       - jobmanager
     environment:
@@ -56,3 +70,14 @@ services:
         condition: service_healthy
     environment:
       - KAFKA_BROKER=kafka:9092
+
+  job-submitter:
+    image: flink:1.18-scala_2.12
+    depends_on:
+      jobmanager:
+        condition: service_started
+      kafka:
+        condition: service_healthy
+    command: ["sleep", "infinity"]
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=jobmanager

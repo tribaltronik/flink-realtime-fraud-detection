@@ -26,15 +26,17 @@ up:
 	@echo "Done! Watch alerts with:"
 	@echo "  docker exec docker-kafka-1 kafka-console-consumer --topic suspicious-transactions --from-beginning --bootstrap-server localhost:9092"
 
-# Approach 2: Flink cluster only
+# Approach 2: Flink cluster with auto job submission
 up-flink:
 	cd docker && docker-compose -f docker-compose.with-flink.yml up -d
 	@echo "Waiting for Kafka and Flink..."
 	@sleep 15
 	cd docker && docker exec docker-kafka-1 kafka-topics --create --topic transactions --bootstrap-server localhost:9092 --partitions 3 --replication-factor 1 2>/dev/null || true
-	@echo "Done!"
+	@echo "Submitting fraud detection job..."
+	$(CURDIR)/submit-job.sh
+	@echo "Done! Flink cluster is running with fraud detection job."
 	@echo "  - Flink UI: http://localhost:8081"
-	@echo "  - Submit Flink jobs manually via SQL client or JAR"
+	@echo "  - Watch alerts: docker exec docker-kafka-1 kafka-console-consumer --topic suspicious-transactions --from-beginning --bootstrap-server localhost:9092"
 
 down:
 	cd docker && docker-compose -f docker-compose.without-flink.yml down 2>/dev/null || true

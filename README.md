@@ -7,6 +7,42 @@ Two approaches to demonstrate real-time fraud detection:
 
 ---
 
+## Requirements
+
+| Tool | Version | Required |
+|------|---------|----------|
+| Docker | 20.10+ | Yes |
+| Docker Compose | 2.0+ | Yes |
+| Python | 3.10+ | For local development |
+| make | Any | Yes |
+
+### Install Prerequisites
+
+**macOS:**
+```bash
+# Install Docker Desktop
+brew install --cask docker
+
+# Python (if needed)
+brew install python
+```
+
+**Linux (Ubuntu/Debian):**
+```bash
+sudo apt update
+sudo apt install docker.io docker-compose python3 make
+```
+
+**Verify Installation:**
+```bash
+docker --version
+docker compose version
+python3 --version
+make --version
+```
+
+---
+
 ## Architecture Diagram
 
 ### Approach 1: Python Detector
@@ -71,6 +107,18 @@ docker exec docker-kafka-1 kafka-console-consumer --topic suspicious-transaction
 | Output | Kafka topic | Kafka topic |
 | Complexity | Low | Medium |
 | Use Case | Demo/checkpoint sim | Production-like |
+
+---
+
+## Tech Stack
+
+| Component | Version |
+|-----------|---------|
+| Kafka | 7.5.0 |
+| Zookeeper | 7.5.0 |
+| Apache Flink | 1.18 |
+| Python | 3.11 |
+| kafka-python-ng | 2.2.3 |
 
 ---
 

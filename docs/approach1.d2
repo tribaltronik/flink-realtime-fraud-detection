@@ -1,0 +1,25 @@
+# Approach 1: Python Detector
+
+generator: Transaction Generator {
+  style.fill: "#e8f4ff"
+  style.stroke: "#1e1e1e"
+}
+
+kafka_in: Kafka {
+  style.fill: "#fff8e1"
+  style.stroke: "#1e1e1e"
+}
+
+detector: Python Fraud Detector {
+  style.fill: "#e8f5e9"
+  style.stroke: "#1e1e1e"
+}
+
+kafka_out: Kafka Topic {
+  style.fill: "#fce4ec"
+  style.stroke: "#1e1e1e"
+}
+
+generator -> kafka_in: produces
+kafka_in -> detector: consumes
+detector -> kafka_out: alerts

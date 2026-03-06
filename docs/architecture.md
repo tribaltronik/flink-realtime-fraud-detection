@@ -108,7 +108,7 @@ make up-flink
 This automatically:
 1. Starts Kafka, Zookeeper, Flink JobManager/TaskManager
 2. Creates Kafka topic `transactions`
-3. Submits the fraud detection SQL job
+3. Runs `./submit-job.sh` to submit the fraud detection SQL job
 4. Starts the transaction generator
 
 ### Verify Job is Running
@@ -193,15 +193,15 @@ flink-realtime-fraud-detection/
 │   ├── docker-compose.without-flink.yml  # Approach 1
 │   ├── docker-compose.with-flink.yml     # Approach 2
 │   ├── detector/
-│   │   └── Dockerfile                    # Python fraud detector
+│   │   └── Dockerfile                    # Python fraud detector (Approach 1)
 │   ├── detector-flink/
-│   │   └── submit.sql                    # Flink SQL fraud detection
+│   │   └── submit.sql                    # Flink SQL (Approach 2)
 │   └── generator/                        # Kafka message generator
 ├── src/
-│   ├── fraud_detector.py              # Python fraud detector
-│   └── kafka_event_generator.py      # Kafka message generator
+│   ├── fraud_detector.py                 # Python fraud detector
+│   └── kafka_event_generator.py          # Kafka message generator
 ├── docs/                                 # Documentation
-├── submit-job.sh                         # Manual job submission script
+├── submit-job.sh                         # Flink job submission script
 ├── makefile                              # Build automation
 └── README.md
 ```

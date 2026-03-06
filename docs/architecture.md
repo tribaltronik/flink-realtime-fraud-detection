@@ -1,5 +1,14 @@
 # Architecture
 
+## Diagrams
+
+- [Approach 1 Diagram](./approach1.excalidraw) - Python Detector
+- [Approach 2 Diagram](./approach2.excalidraw) - Apache Flink Cluster
+
+> Open the `.excalidraw` files in [Excalidraw](https://excalidraw.com) to edit.
+
+---
+
 ## Overview
 
 This project demonstrates real-time fraud detection using two approaches:

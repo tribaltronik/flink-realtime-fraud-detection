@@ -9,59 +9,13 @@ Two approaches to demonstrate real-time fraud detection:
 
 ## Architecture Diagram
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                           APPROACH 1                                        │
-│                    (Python Detector + Checkpoint Simulation)               │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│   ┌──────────┐      ┌─────────────────┐      ┌──────────────────────┐       │
-│   │  Kafka   │ ───▶ │ Python Detector │ ───▶ │  Kafka Topic        │       │
-│   │ Generator│      │  (flink_detector│      │  suspicious-        │       │
-│   └──────────┘      │   .py)          │      │  transactions       │       │
-│                     │                 │      └──────────────────────┘       │
-│                     │ • HIGH_VALUE    │              │                     │
-│                     │ • HIGH_VELOCITY │              ▼                     │
-│                     │ • Checkpoint    │      ┌──────────────────────┐      │
-│                     │   Simulation    │      │  Console Consumer    │      │
-│                     └─────────────────┘      └──────────────────────┘      │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+### Approach 1: Python Detector
 
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                           APPROACH 2                                        │
-│                      (Apache Flink Cluster)                                 │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│   ┌──────────┐      ┌─────────────────────────────────────────────────┐   │
-│   │  Kafka   │ ───▶ │              Flink Cluster                       │   │
-│   │ Generator│      │  ┌─────────────┐       ┌─────────────────┐    │   │
-│   └──────────┘      │  │ JobManager  │──────▶│  TaskManager    │    │   │
-│                     │  │  (REST API) │       │  (Fraud SQL)    │    │   │
-│                     │  └─────────────┘       └─────────────────┘    │   │
-│                     │         │                        │               │   │
-│                     │         │                        ▼               │   │
-│                     │         │              ┌─────────────────┐     │   │
-│                     │         └──────────────▶│  Print Sink     │     │   │
-│                     │                        │  (taskmanager   │     │   │
-│                     │                        │   logs)         │     │   │
-│                     │                        └─────────────────┘     │   │
-│                     │                                                      │   │
-│                     │  Fraud Rules (SQL):                                 │   │
-│                     │  • amount >= 5000 → HIGH_VALUE                     │   │
-│                     │  • country IN ('XX','YY','ZZ') → RISK_COUNTRY     │   │
-│                     │  • amount > 3000 AND round → ROUND_AMOUNT         │   │
-│                     └──────────────────────────────────────────────────────┘   │
-│                                         │                                    │
-│                                         ▼                                    │
-│                              ┌──────────────────────┐                       │
-│                              │   Flink UI           │                       │
-│                              │   http://localhost:   │                       │
-│                              │   8081               │                       │
-│                              └──────────────────────┘                       │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+![Approach 1](./docs/approach1.svg)
+
+### Approach 2: Apache Flink Cluster
+
+![Approach 2](./docs/approach2.svg)
 
 ---
 
@@ -95,14 +49,14 @@ Features:
 - Flink JobManager + TaskManager running
 - Fraud detection job **automatically submitted**
 - Flink UI: http://localhost:8081
-- Suspicious transactions printed to TaskManager logs
+- Suspicious transactions written to Kafka topic
 
 ```bash
-# Watch suspicious transactions (TaskManager logs)
-docker logs -f docker-taskmanager-1
+# Watch suspicious transactions
+docker exec docker-kafka-1 kafka-console-consumer --topic suspicious-transactions --from-beginning --bootstrap-server localhost:9092
 
-# Or via Flink UI
-# Open http://localhost:8081
+# Or view Flink UI
+# http://localhost:8081
 ```
 
 ---
@@ -114,7 +68,7 @@ docker logs -f docker-taskmanager-1
 | Processor | Python | Flink SQL |
 | Checkpoint | Simulated | Real |
 | Job in Flink UI | No | Yes (auto-submitted) |
-| Output | Kafka topic | Print to logs |
+| Output | Kafka topic | Kafka topic |
 | Complexity | Low | Medium |
 | Use Case | Demo/checkpoint sim | Production-like |
 

@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 480">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#1e1e1e"/>
+    </marker>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="900" height="480" fill="#ffffff"/>
+  
+  <!-- Title -->
+  <text x="450" y="30" font-family="Arial, sans-serif" font-size="22" font-weight="bold" text-anchor="middle" fill="#1e1e1e">Approach 2: Apache Flink Cluster</text>
+  
+  <!-- Generator Box -->
+  <rect x="60" y="80" width="120" height="60" rx="5" fill="#e8f4ff" stroke="#1e1e1e" stroke-width="2"/>
+  <text x="120" y="105" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#1e1e1e">Generator</text>
+  <text x="120" y="125" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#666666">Kafka Producer</text>
+  
+  <!-- Arrow to Kafka -->
+  <line x1="180" y1="110" x2="260" y2="110" stroke="#1e1e1e" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Kafka Box -->
+  <rect x="280" y="80" width="120" height="60" rx="5" fill="#fff8e1" stroke="#1e1e1e" stroke-width="2"/>
+  <text x="340" y="105" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#1e1e1e">Kafka</text>
+  <text x="340" y="125" font-family="Arial, sans-serif" font-size="11" text-anchor="middle" fill="#666666">transactions</text>
+  
+  <!-- Arrow to Flink -->
+  <line x1="400" y1="110" x2="480" y2="110" stroke="#1e1e1e" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Flink Cluster Box -->
+  <rect x="500" y="50" width="180" height="140" rx="5" fill="#f3e5f5" stroke="#1e1e1e" stroke-width="2"/>
+  <text x="590" y="75" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#1e1e1e">Flink Cluster</text>
+  
+  <!-- JobManager Box -->
+  <rect x="520" y="90" width="70" height="40" rx="3" fill="#e1bee7" stroke="#1e1e1e" stroke-width="1"/>
+  <text x="555" y="112" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="#1e1e1e">JobManager</text>
+  <text x="555" y="124" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666666">REST :8081</text>
+  
+  <!-- Arrow to TaskManager -->
+  <line x1="555" y1="130" x2="555" y2="160" stroke="#1e1e1e" stroke-width="1"/>
+  <polygon points="550,155 555,165 560,155" fill="#1e1e1e"/>
+  
+  <!-- TaskManager Box -->
+  <rect x="520" y="165" width="70" height="40" rx="3" fill="#e1bee7" stroke="#1e1e1e" stroke-width="1"/>
+  <text x="555" y="187" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="#1e1e1e">TaskManager</text>
+  <text x="555" y="199" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#666666">Fraud SQL</text>
+  
+  <!-- Flink SQL Text -->
+  <rect x="600" y="100" width="60" height="40" rx="3" fill="#f8bbd9" stroke="#1e1e1e" stroke-width="1"/>
+  <text x="630" y="122" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#1e1e1e">Flink SQL</text>
+  <text x="630" y="134" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#1e1e1e">Fraud Job</text>
+  
+  <!-- Flink UI Box -->
+  <rect x="700" y="50" width="80" height="45" rx="3" fill="#e3f2fd" stroke="#1e1e1e" stroke-width="1"/>
+  <text x="740" y="72" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="#1e1e1e">Flink UI</text>
+  <text x="740" y="86" font-family="Arial, sans-serif" font-size="9" text-anchor="middle" fill="#666666">:8081</text>
+  
+  <!-- Arrow from TaskManager to Kafka -->
+  <line x1="640" y1="185" x2="720" y2="185" stroke="#1e1e1e" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Output Kafka Box -->
+  <rect x="740" y="160" width="120" height="60" rx="5" fill="#fce4ec" stroke="#1e1e1e" stroke-width="2"/>
+  <text x="800" y="185" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#1e1e1e">Kafka Topic</text>
+  <text x="800" y="202" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#666666">suspicious-</text>
+  <text x="800" y="214" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#666666">transactions</text>
+  
+  <!-- Rules Box -->
+  <rect x="60" y="240" width="800" height="100" rx="5" fill="#f5f5f5" stroke="#cccccc" stroke-width="1"/>
+  <text x="80" y="270" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1e1e1e">Fraud Rules (Flink SQL):</text>
+  
+  <text x="80" y="300" font-family="Arial, sans-serif" font-size="12" fill="#666666">• HIGH_VALUE: amount &gt;= 5000</text>
+  <text x="280" y="300" font-family="Arial, sans-serif" font-size="12" fill="#666666">• RISK_COUNTRY: country IN ('XX', 'YY', 'ZZ')</text>
+  <text x="540" y="300" font-family="Arial, sans-serif" font-size="12" fill="#666666">• ROUND_AMOUNT: amount &gt; 3000 AND MOD(amount, 1000) = 0</text>
+  
+  <text x="80" y="330" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#1e1e1e">Features:</text>
+  <text x="80" y="355" font-family="Arial, sans-serif" font-size="12" fill="#666666">• Checkpointing • Exactly-Once • Parallel Processing • Fault Tolerance</text>
+</svg>

@@ -87,6 +87,9 @@ Features:
 - Flink UI: http://localhost:8081
 - Suspicious transactions written to Kafka topic
 
+
+![sql diagram](./docs/sql-flink.png)
+
 ```bash
 # Watch suspicious transactions
 docker exec docker-kafka-1 kafka-console-consumer --topic suspicious-transactions --from-beginning --bootstrap-server localhost:9092
